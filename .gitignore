@@ -6,3 +6,4 @@ db
 server/proxy/logs/
 src/index.php
 media/
+server/proxy/ssl/

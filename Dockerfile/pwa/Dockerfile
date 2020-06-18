@@ -65,7 +65,7 @@ RUN apt-get update \
 
 # Install Node, NVM, NPM and Grunt
 
-RUN curl -sL https://deb.nodesource.com/setup_11.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
   	&& apt-get install -y nodejs build-essential \
     && curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh \
     && npm i -g grunt-cli yarn
@@ -121,8 +121,7 @@ RUN chmod 777 -Rf /var/www /var/www/.* \
 	&& usermod -u 1000 www-data \
 	&& chsh -s /bin/bash www-data\
 	&& a2enmod rewrite \
-	&& a2enmod headers \
-    && a2enmod ssl
+	&& a2enmod headers
 
 VOLUME /var/www/html
 WORKDIR /var/www/html

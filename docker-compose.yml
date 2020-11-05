@@ -1,26 +1,26 @@
 version: '2'
 services:
-    pwa:
-        image: palomino/magento:pwa
-        ports:
-            - "8082:80" # web
-        volumes:
-            - ./pwa:/var/www/html
-            - ~/.composer:/var/www/.composer
-            - ~/.npm:/var/www/.npm
-            - ~/.ssh:/root/.ssh
-        environment:
-            XDEBUG_CONFIG: "remote_host=ananda.ckt"
-            PHP_IDE_CONFIG: "serverName=Docker"
-        depends_on:
-            - db
-        links:
-            - db
-        networks:
-            - magento-network
+    # pwa:
+    #     image: palomino/magento:pwa
+    #     ports:
+    #         - "8082:80" # web
+    #     volumes:
+    #         - ./pwa:/var/www/html
+    #         - ~/.composer:/var/www/.composer
+    #         - ~/.npm:/var/www/.npm
+    #         - ~/.ssh:/root/.ssh
+    #     environment:
+    #         XDEBUG_CONFIG: "remote_host=ananda.ckt"
+    #         PHP_IDE_CONFIG: "serverName=Docker"
+    #     depends_on:
+    #         - db
+    #     links:
+    #         - db
+    #     networks:
+    #         - magento-network
 
     apache:
-        image: palomino/magento:apache
+        image: palomino/magento:php_7.4
         # build: .
         ports:
             - "80:80" # web
@@ -34,31 +34,33 @@ services:
             - ~/.ssh:/root/.ssh
             - ./server/proxy/ssl:/etc/apache2/ssl
             - ./server/proxy/vhost:/etc/apache2/sites-enabled
-            - ./server/proxy/logs:/var/www/ananda.ckt/logs
+            - ./server/proxy/logs:/var/www/bissu.ckt/logs
             - ./env/magento/magento-vars.php:/app/magento-vars.php
             - ./env/magento/php.ini:/usr/local/etc/php/php.ini
             # - ~/.nvm:/var/www/.nvm
         environment:
-            XDEBUG_CONFIG: "remote_host=ananda.ckt"
+            XDEBUG_CONFIG: "remote_host=bissu.ckt"
             PHP_IDE_CONFIG: "serverName=Docker"
         depends_on:
             - db
+            - elasticsearch
         links:
             - db
+            - elasticsearch
         networks:
             - magento-network
 
     db:
-        image: mariadb
+        image: mariadb:10.4
         ports:
-         - 3300:3306
+            - 3300:3306
         environment:
             - MYSQL_ROOT_PASSWORD=root
             - MYSQL_DATABASE=magento
             - MYSQL_USER=magento
             - MYSQL_PASSWORD=magento
         volumes:
-            - dbdata:/var/lib/mysql
+            - mdb:/var/lib/mysql
         networks:
             - magento-network
 
@@ -78,6 +80,24 @@ services:
         image: redis
         ports:
          - 6379
+        networks:
+            - magento-network
+
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
+        volumes:
+            - elastic:/usr/share/elasticsearch/data
+            # - ./server/elasticsearch/logs:/var/log/elasticsearch/
+            # - ./server/elasticsearch/logs:/usr/share/elasticsearch/logs
+        ports:
+            - 9200:9200
+        environment:
+            - discovery.type=single-node
+            - bootstrap.memory_lock=true
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
         networks:
             - magento-network
 
@@ -101,5 +121,7 @@ networks:
         driver: bridge
 
 volumes:
-    dbdata:
+    mdb:
+        driver: local
+    elastic:
         driver: local

@@ -27,6 +27,10 @@ if sys.argv[1] == "down":
     os.system("docker-compose down")
     exit(0)
 
+if sys.argv[1] == "ps":
+    os.system("docker-compose ps")
+    exit(0)
+
 if sys.argv[1] == "restart":
     os.system("docker-compose down && docker-compose up -d")
     exit(0)

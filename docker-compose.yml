@@ -14,12 +14,12 @@ services:
             - ~/.ssh:/root/.ssh
             - ./server/proxy/ssl:/etc/apache2/ssl
             - ./server/proxy/vhost:/etc/apache2/sites-enabled
-            - ./server/proxy/logs:/var/www/bissu.ckt/logs
+            - ./server/proxy/logs:/var/www/gv.ckt/logs
             - ./env/magento/magento-vars.php:/app/magento-vars.php
             - ./env/magento/php.ini:/usr/local/etc/php/php.ini
             # - ~/.nvm:/var/www/.nvm
         environment:
-            XDEBUG_CONFIG: "remote_host=bissu.ckt"
+            XDEBUG_CONFIG: "remote_host=gv.ckt"
             PHP_IDE_CONFIG: "serverName=Docker"
         depends_on:
             - db

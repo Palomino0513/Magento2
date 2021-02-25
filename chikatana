@@ -127,6 +127,9 @@ if sys.argv[1] == "magento":
         elif sys.argv[2] == "upgrade":
             os.system("docker-compose exec -u www-data apache php bin/magento setup:upgrade")
             exit(0)
+        elif sys.argv[2] == "reindex":
+            os.system("docker-compose exec -u www-data apache php bin/magento indexer:reindex")
+            exit(0)
 
 
 

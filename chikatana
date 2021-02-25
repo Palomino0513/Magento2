@@ -27,6 +27,10 @@ if sys.argv[1] == "down":
     os.system("docker-compose down")
     exit(0)
 
+if sys.argv[1] == "ps":
+    os.system("docker-compose ps")
+    exit(0)
+
 if sys.argv[1] == "restart":
     os.system("docker-compose down && docker-compose up -d")
     exit(0)
@@ -84,7 +88,7 @@ if sys.argv[1] == "db":
             print("Listo.")
             exit(0)
         elif sys.argv[2] == "fix":
-            hostname = 'https://ananda.ckt/'
+            hostname = 'https://bissu.ckt/'
             print("Comenzara el fix")
             query = """
                 UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_url';

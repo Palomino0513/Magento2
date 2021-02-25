@@ -1,4 +1,4 @@
-FROM php:7.2-apache
+FROM php:7.4-apache
 
 MAINTAINER Rafael Corrêa Gomes <rafaelcgstz@gmail.com>
 
@@ -13,7 +13,7 @@ RUN apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	libfreetype6-dev \
 	libicu-dev \
-  libssl-dev \
+	libssl-dev \
 	libjpeg62-turbo-dev \
 	libmcrypt-dev \
 	libedit-dev \
@@ -34,18 +34,22 @@ RUN apt-get update \
 	cron \
 	bash-completion \
 	libsodium-dev \
+	libzip-dev \
+	libfreetype6-dev \
+	libjpeg62-turbo-dev \
+	libpng-dev \
 	&& apt-get clean
 
 # Install Magento Dependencies
 
 RUN docker-php-ext-configure \
-  	gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/; \
+  	gd --with-freetype --with-jpeg && \
   	docker-php-ext-install \
   	opcache \
   	gd \
   	bcmath \
   	intl \
-  	mbstring \
+  	# mbstring \
   	# mcrypt \
   	pdo_mysql \
   	soap \

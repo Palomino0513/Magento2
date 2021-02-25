@@ -88,7 +88,7 @@ if sys.argv[1] == "db":
             print("Listo.")
             exit(0)
         elif sys.argv[2] == "fix":
-            hostname = 'https://bissu.ckt/'
+            hostname = 'https://ivone.ckt/'
             print("Comenzara el fix")
             query = """
                 UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_url';

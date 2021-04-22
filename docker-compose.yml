@@ -4,6 +4,7 @@ services:
         image: palomino/magento:php_7.4
         ports:
             - "80:80"
+            - "81:80"
             - "443:443"
             - "9000:9000" # xdebug
             # - "35729:35729" # live reload

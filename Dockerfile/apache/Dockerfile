@@ -77,7 +77,7 @@ RUN curl -sL https://deb.nodesource.com/setup_11.x | bash - \
 # Install Composer
 
 RUN	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
-RUN composer global require hirak/prestissimo
+# RUN composer global require hirak/prestissimo
 
 # Install Code Sniffer
 
@@ -89,8 +89,9 @@ ENV PATH="/var/www/.composer/vendor/bin/:${PATH}"
 
 # Install XDebug
 
-RUN yes | pecl install xdebug && \
-	 echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.iniOLD
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.iniOLD
+
 
 # Install Mhsendmail
 
@@ -109,7 +110,7 @@ RUN wget https://files.magerun.net/n98-magerun2.phar \
 
 ADD .docker/config/php.ini /usr/local/etc/php/php.ini
 ADD .docker/config/magento.conf /etc/apache2/sites-available/magento.conf
-ADD .docker/config/custom-xdebug.ini /usr/local/etc/php/conf.d/custom-xdebug.ini
+# ADD .docker/config/custom-xdebug.ini /usr/local/etc/php/conf.d/custom-xdebug.ini
 COPY .docker/bin/* /usr/local/bin/
 COPY .docker/users/* /var/www/
 RUN chmod +x /usr/local/bin/*

@@ -1,4 +1,4 @@
-upstream bissu.ckt {
+upstream cruzazul.ckt {
     server apache;
 }
 
@@ -12,10 +12,10 @@ server {
         return 301 https://$server_name$request_uri;
     }
 
-    server_name bissu.ckt;
+    server_name cruzazul.ckt;
 
-    access_log /etc/nginx/logs/bissu.ckt.access.log;
-    error_log /etc/nginx/logs/bissu.ckt.error.log;
+    access_log /etc/nginx/logs/cruzazul.ckt.access.log;
+    error_log /etc/nginx/logs/cruzazul.ckt.error.log;
 
     # Enable SSL
     ssl on;
@@ -31,7 +31,7 @@ server {
                text/xml application/xml application/xml+rss text/javascript;
 
     location / {
-        proxy_pass https://bissu.ckt/;
+        proxy_pass https://cruzazul.ckt/;
         proxy_redirect     off;
         proxy_set_header   Host $host;
         proxy_set_header   X-Real-IP $remote_addr;

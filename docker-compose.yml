@@ -1,7 +1,7 @@
 version: '2'
 services:
     apache:
-        image: palomino/magento
+        image: palomino/magento:iusa
         ports:
             - "80:80"
             - "443:443"

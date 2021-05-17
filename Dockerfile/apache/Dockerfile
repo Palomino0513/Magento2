@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:7.1-apache
 
 MAINTAINER Rafael Corrêa Gomes <rafaelcgstz@gmail.com>
 
@@ -35,9 +35,9 @@ RUN apt-get update \
 	bash-completion \
 	libsodium-dev \
 	libzip-dev \
-	libfreetype6-dev \
-	libjpeg62-turbo-dev \
 	libpng-dev \
+	libxml2-dev \
+	libxslt-dev \
 	&& apt-get clean
 
 # Install Magento Dependencies
@@ -50,7 +50,7 @@ RUN docker-php-ext-configure \
   	bcmath \
   	intl \
   	# mbstring \
-  	# mcrypt \
+  	mcrypt \
   	pdo_mysql \
   	soap \
   	xsl \
@@ -76,8 +76,8 @@ RUN curl -sL https://deb.nodesource.com/setup_11.x | bash - \
 
 # Install Composer
 
-RUN	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
-RUN composer global require hirak/prestissimo
+RUN	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer --version=1.10.22
+# RUN composer global require hirak/prestissimo
 
 # Install Code Sniffer
 
@@ -89,8 +89,7 @@ ENV PATH="/var/www/.composer/vendor/bin/:${PATH}"
 
 # Install XDebug
 
-RUN yes | pecl install xdebug && \
-	 echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.iniOLD
+# RUN yes | pecl install xdebug && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.iniOLD
 
 # Install Mhsendmail
 

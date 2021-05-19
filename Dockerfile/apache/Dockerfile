@@ -11,6 +11,8 @@ RUN apt-get update \
 	software-properties-common \
 	&& apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y \
+	libwebp-dev \
+	libxpm-dev \
 	libfreetype6-dev \
 	libicu-dev \
 	libssl-dev \
@@ -39,17 +41,22 @@ RUN apt-get update \
 	libxml2-dev \
 	libxslt-dev \
 	&& apt-get clean
+RUN apt-get update && \
+    apt-get install -y \
+        zlib1g-dev
 
 # Install Magento Dependencies
 
-RUN docker-php-ext-configure \
-  	gd --with-freetype --with-jpeg && \
-  	docker-php-ext-install \
+RUN docker-php-ext-configure gd --with-gd --with-webp-dir --with-jpeg-dir \
+    --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir \
+    --enable-gd-native-ttf
+RUN docker-php-ext-install -j$(nproc) gd
+RUN docker-php-ext-enable gd 
+RUN docker-php-ext-install \
   	opcache \
-  	gd \
   	bcmath \
   	intl \
-  	# mbstring \
+  	mbstring \
   	mcrypt \
   	pdo_mysql \
   	soap \

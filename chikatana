@@ -88,14 +88,23 @@ if sys.argv[1] == "db":
             print("Listo.")
             exit(0)
         elif sys.argv[2] == "fix":
-            hostname = 'https://bissu.ckt/'
             print("Comenzara el fix")
+
+            hostname = 'https://bissu.ckt/'
             query = """
-                UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_url';
-                UPDATE core_config_data SET value='%s' WHERE path='web/secure/base_url';
-                UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_link_url';
-                UPDATE core_config_data SET value='%s' WHERE path='web/secure/base_link_url';
+                UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_url' and scope_id=0;
+                UPDATE core_config_data SET value='%s' WHERE path='web/secure/base_url' and scope_id=0;
+                UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_link_url' and scope_id=0;
+                UPDATE core_config_data SET value='%s' WHERE path='web/secure/base_link_url' and scope_id=0;
                 """ % (hostname, hostname, hostname, hostname)
+            hostname = 'https://soybissu.ckt/'
+            query += """
+                UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_url' and scope_id=4;
+                UPDATE core_config_data SET value='%s' WHERE path='web/secure/base_url' and scope_id=4;
+                UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_link_url' and scope_id=4;
+                UPDATE core_config_data SET value='%s' WHERE path='web/secure/base_link_url' and scope_id=4;
+                """ % (hostname, hostname, hostname, hostname)
+
             os.system("docker-compose exec -u root db mysql -u magento -p magento -e \"" + query + "\"")
             print("Listo.")
             exit(0)
@@ -126,6 +135,9 @@ if sys.argv[1] == "magento":
             exit(0)
         elif sys.argv[2] == "upgrade":
             os.system("docker-compose exec -u www-data apache php bin/magento setup:upgrade")
+            exit(0)
+        elif sys.argv[2] == "reindex":
+            os.system("docker-compose exec -u www-data apache php bin/magento indexer:reindex")
             exit(0)
 
 
@@ -218,7 +230,7 @@ if sys.argv[1] == "magento":
         elif sys.argv[2] == "create":
             if  sys.argv[3] == "admin-user":
                 print(Fore.BLUE + "Creando Palomino admin ..." + Style.RESET_ALL)
-                os.system("docker-compose exec -u www-data apache php bin/magento admin:user:create --admin-user='palomino' --admin-password='Law200110513' --admin-email='palomino@wolfsellers.com' --admin-firstname='palomino' --admin-lastname='palomino'")
+                os.system("docker-compose exec -u www-data apache php bin/magento admin:user:create --admin-user='palomino1' --admin-password='Law200110513' --admin-email='palomino@wolfsellers.com' --admin-firstname='palomino' --admin-lastname='palomino'")
             else:
                 print("No se encontro el commando a ejecutar.")
             exit(0)

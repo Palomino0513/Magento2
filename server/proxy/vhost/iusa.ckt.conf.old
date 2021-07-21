@@ -39,3 +39,50 @@ server {
         proxy_set_header   X-Forwarded-Host $server_name;
     }
 }
+
+
+
+
+
+
+upstream totalherramientas.ckt {
+    server apache:81;
+}
+
+server {
+
+    listen 80;
+    listen [::]:80;
+    listen 443;
+
+    if ($scheme = http) {
+        return 301 https://$server_name$request_uri;
+    }
+
+    server_name totalherramientas.ckt;
+
+    access_log /etc/nginx/logs/totalherramientas.ckt.access.log;
+    error_log /etc/nginx/logs/totalherramientas.ckt.error.log;
+
+    # Enable SSL
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/ssl.crt;
+    ssl_certificate_key /etc/nginx/ssl/ssl.key;
+    ssl_session_timeout 10m;
+    # ssl_dhparam /etc/nginx/ssl/cert.pem;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
+    ssl_prefer_server_ciphers on;
+
+    gzip_types text/plain text/css application/json application/x-javascript
+               text/xml application/xml application/xml+rss text/javascript;
+
+    location / {
+        proxy_pass https://totalherramientas.ckt/;
+        proxy_redirect     off;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Host $server_name;
+    }
+}

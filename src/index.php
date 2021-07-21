@@ -19,6 +19,12 @@
  */
 
 try {
+
+    if(isHttpHost("totalherramientas.ckt")) {
+        $_SERVER["MAGE_RUN_CODE"] = "total";
+        $_SERVER["MAGE_RUN_TYPE"] = "website";
+    }
+
     require __DIR__ . '/app/bootstrap.php';
 } catch (\Exception $e) {
     echo <<<HTML

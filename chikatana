@@ -88,13 +88,16 @@ if sys.argv[1] == "db":
             print("Listo.")
             exit(0)
         elif sys.argv[2] == "fix":
-            hostname = 'https://bissu.ckt/'
+            hostname = 'https://amex.ckt/'
             print("Comenzara el fix")
             query = """
                 UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_url';
                 UPDATE core_config_data SET value='%s' WHERE path='web/secure/base_url';
                 UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_link_url';
                 UPDATE core_config_data SET value='%s' WHERE path='web/secure/base_link_url';
+                UPDATE core_config_data SET value='' WHERE path='web/secure/base_static_url';
+                UPDATE core_config_data SET value='' WHERE path='web/secure/base_media_url';
+                UPDATE core_config_data SET value='amex.ckt' WHERE path='web/cookie/cookie_domain';
                 """ % (hostname, hostname, hostname, hostname)
             os.system("docker-compose exec -u root db mysql -u magento -p magento -e \"" + query + "\"")
             print("Listo.")
@@ -167,6 +170,21 @@ if sys.argv[1] == "magento":
                 exit(0)
             else:
                 print("El comando de magento esta incompleto")
+
+
+
+        ###########################################################################
+        #                             RESET COMMANDS                              #
+        ###########################################################################
+
+        elif sys.argv[2] == "reset":
+            os.system("docker-compose down")
+            os.system("rm -rf src/generated src/pub/static/*")
+            print("Delete folders...")
+            os.system("docker-compose up -d")
+            os.system("docker-compose exec -u www-data apache php bin/magento setup:upgrade")
+            os.system("docker-compose exec -u www-data apache php bin/magento cache:clean")
+            exit(0)
 
 
 

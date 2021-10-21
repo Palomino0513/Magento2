@@ -1,7 +1,7 @@
 version: '2'
 services:
     apache:
-        image: palomino/magento:7.2
+        image: palomino/magento:php_7.4
         ports:
             - "80:80"
             - "443:443"

@@ -93,6 +93,7 @@ if sys.argv[1] == "db":
             query = """
                 UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_url';
                 UPDATE core_config_data SET value='%s' WHERE path='web/secure/base_url';
+                UPDATE core_config_data SET value='ivone.ckt' WHERE path='web/cookie/cookie_domain';
                 """ % (hostname, hostname)
             os.system("docker-compose exec -u root db mysql -u magento -p magento -e \"" + query + "\"")
             print("Listo.")

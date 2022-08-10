@@ -170,6 +170,20 @@ if sys.argv[1] == "magento":
                 print("El comando de magento esta incompleto")
 
 
+        ###########################################################################
+        #                             RESET COMMANDS                              #
+        ###########################################################################
+
+        elif sys.argv[2] == "reset":
+            os.system("docker-compose down")
+            os.system("rm -rf src/generated src/pub/static/*")
+            print("Delete folders...")
+            os.system("docker-compose up -d")
+            os.system("docker-compose exec -u www-data apache php bin/magento setup:upgrade")
+            os.system("docker-compose exec -u www-data apache php bin/magento cache:clean")
+            exit(0)
+
+
 
         ###########################################################################
         #                         TEMPLATE HINTS COMMANDS                         #

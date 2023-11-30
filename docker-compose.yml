@@ -1,7 +1,7 @@
 version: '2'
 services:
     apache:
-        image: palomino/magento:php_8.2
+        image: palomino/magento:php_8.1
         ports:
             - "80:80"
             - "443:443"
@@ -14,7 +14,7 @@ services:
             - ~/.ssh:/root/.ssh
             - ./server/proxy/ssl:/etc/apache2/ssl
             - ./server/proxy/vhost:/etc/apache2/sites-enabled
-            - ./server/proxy/logs:/var/www/magento.ckt/logs
+            - ./server/proxy/logs:/var/www/vitro.ckt/logs
             - ./env/magento/magento-vars.php:/app/magento-vars.php
             - ./env/magento/php.ini:/usr/local/etc/php/php.ini
             # - ~/.nvm:/var/www/.nvm

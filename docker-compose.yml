@@ -19,7 +19,7 @@ services:
             - ./env/magento/php.ini:/usr/local/etc/php/php.ini
             # - ~/.nvm:/var/www/.nvm
         environment:
-            XDEBUG_CONFIG: "remote_host=magento.ckt"
+            XDEBUG_CONFIG: "remote_host=vitro.ckt"
             PHP_IDE_CONFIG: "serverName=Docker"
         depends_on:
             - db
@@ -29,7 +29,6 @@ services:
             - elasticsearch
         networks:
             - magento-network
-
     db:
         image: mariadb:10.4
         ports:
@@ -43,7 +42,6 @@ services:
             - mdb:/var/lib/mysql
         networks:
             - magento-network
-
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         environment:
@@ -55,14 +53,12 @@ services:
          - 8080:80
         networks:
             - magento-network
-
     redis:
         image: redis
         ports:
          - 6379
         networks:
             - magento-network
-
     elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
         volumes:
@@ -80,26 +76,22 @@ services:
                 hard: -1
         networks:
             - magento-network
-
     redis-session:
         image: redis
         ports:
          - 6379
         networks:
             - magento-network
-
-    mailhog:
-        image: mailhog/mailhog
-        ports:
-            - 1025:1025
-            - 8025:8025
-        networks:
-            - magento-network
-
+    # mailhog:
+    #    image: mailhog/mailhog
+    #    ports:
+    #        - 1025:1025
+    #        - 8025:8025
+    #    networks:
+    #        - magento-network
 networks:
     magento-network:
         driver: bridge
-
 volumes:
     mdb:
         driver: local

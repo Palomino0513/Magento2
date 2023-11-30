@@ -3,7 +3,6 @@ upstream vitro.ckt {
 }
 
 server {
-
     listen 80;
     listen [::]:80;
     listen 443;

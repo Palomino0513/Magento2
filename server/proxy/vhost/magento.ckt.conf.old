@@ -1,4 +1,4 @@
-upstream magento.ckt {
+upstream chopo.ckt {
     server apache;
 }
 
@@ -12,10 +12,10 @@ server {
         return 301 https://$server_name$request_uri;
     }
 
-    server_name magento.ckt;
+    server_name chopo.ckt;
 
-    access_log /etc/nginx/logs/magento.ckt.access.log;
-    error_log /etc/nginx/logs/magento.ckt.error.log;
+    access_log /etc/nginx/logs/chopo.ckt.access.log;
+    error_log /etc/nginx/logs/chopo.ckt.error.log;
 
     # Enable SSL
     ssl on;
@@ -31,7 +31,7 @@ server {
                text/xml application/xml application/xml+rss text/javascript;
 
     location / {
-        proxy_pass https://magento.ckt/;
+        proxy_pass https://chopo.ckt/;
         proxy_redirect     off;
         proxy_set_header   Host $host;
         proxy_set_header   X-Real-IP $remote_addr;

@@ -4,19 +4,12 @@ import os
 import colorama
 from colorama import Fore, Style
 
-if sys.argv[0] != "./chikatana":
+if sys.argv[0] != "./chikatana" and sys.argv[0] != "./ckt":
     print("Comando no valido.")
     exit(0)
 
-def printHelp():
-    print("Chikatana Command Line:")
-
-if len(sys.argv) == 1:
-    printHelp()
-    exit(0)
-
-if sys.argv[1] == "init":
-    os.system("docker-compose up -d")
+if sys.argv[1] == "start":
+    os.system("docker-compose start")
     exit(0)
 
 if sys.argv[1] == "up":
@@ -37,35 +30,6 @@ if sys.argv[1] == "restart":
 
 
 
-###################################################################################
-#                                                                                 #
-#                                 DOCKER COMMANDS                                 #
-#                                                                                 #
-###################################################################################
-
-if sys.argv[1] == "docker":
-    if len(sys.argv) == 3:
-        if sys.argv[2] == "ps":
-            os.system("docker-compose ps")
-            exit(0)
-
-        # Mensaje para indicar que el comando no fue encontrado
-        print("El comando docker no encontrado")
-    elif len(sys.argv) > 3:
-        if sys.argv[2] == "magento":
-            if sys.argv[3] == "build":
-                os.system("cd Dockerfile/apache && docker build --rm --no-cache -t palomino/magento:apache .")
-                exit(0)
-
-        # Mensaje para indicar que el comando no fue encontrado
-        print("El comando docker no encontrado")
-    else:
-        # Mensaje para indicar que el comando no se puede ejecutar
-        print("El comando docker esta incompleto")
-    exit(0)
-
-
-
 
 ###################################################################################
 #                                                                                 #
@@ -75,7 +39,7 @@ if sys.argv[1] == "docker":
 
 if sys.argv[1] == "db":
     if len(sys.argv) == 2:
-        os.system("docker-compose exec -u www-data db mysql -u magento -p magento")
+        os.system("docker-compose exec db mysql -u magento -p magento")
         exit(0)
     elif len(sys.argv) >= 3:
         if sys.argv[2] == "clean":
@@ -84,7 +48,7 @@ if sys.argv[1] == "db":
                 DROP DATABASE magento;
                 CREATE DATABASE magento;
                 """
-            os.system("docker-compose exec -u www-data db mysql -u magento -p -e \"" + query + "\"")
+            os.system("docker-compose exec db mysql -u magento -p -e \"" + query + "\"")
             print("Listo.")
             exit(0)
         elif sys.argv[2] == "fix":
@@ -96,8 +60,11 @@ if sys.argv[1] == "db":
                 UPDATE core_config_data SET value='%s' WHERE path='web/unsecure/base_link_url';
                 UPDATE core_config_data SET value='%s' WHERE path='web/secure/base_link_url';
                 """ % (hostname, hostname, hostname, hostname)
-            os.system("docker-compose exec -u root db mysql -u magento -p magento -e \"" + query + "\"")
+            os.system("docker-compose exec db mysql -u magento -p magento -e \"" + query + "\"")
             print("Listo.")
+            exit(0)
+        elif sys.argv[2] == "bash":
+            os.system("docker-compose exec db bash")
             exit(0)
 
         # Mensaje para indicar que el comando no fue encontrado
@@ -118,17 +85,17 @@ if sys.argv[1] == "db":
 
 if sys.argv[1] == "magento":
     if len(sys.argv) == 2:
-        os.system("docker-compose exec -u www-data apache bash")
+        os.system("docker-compose exec fpm bash")
         exit(0)
     elif len(sys.argv) >= 3:
         if sys.argv[2] == "composer":
-            os.system("docker-compose exec -u www-data apache composer install")
+            os.system("docker-compose exec fpm composer install")
             exit(0)
         elif sys.argv[2] == "upgrade":
-            os.system("docker-compose exec -u www-data apache php bin/magento setup:upgrade")
+            os.system("docker-compose exec fpm php bin/magento setup:upgrade")
             exit(0)
         elif sys.argv[2] == "reindex":
-            os.system("docker-compose exec -u www-data apache php bin/magento indexer:reindex")
+            os.system("docker-compose exec fpm php bin/magento indexer:reindex")
             exit(0)
 
 
@@ -140,29 +107,29 @@ if sys.argv[1] == "magento":
         elif sys.argv[2] == "cache":
             if len(sys.argv) == 3:
                 print(Fore.BLUE + "Clear Cahe ..." + Style.RESET_ALL)
-                os.system("docker-compose exec -u www-data apache php bin/magento cache:clean")
+                os.system("docker-compose exec fpm php bin/magento cache:clean")
                 print(Fore.GREEN + "Hecho." + Style.RESET_ALL)
                 exit(0)
             elif sys.argv[3] == "status":
-                os.system("docker-compose exec -u www-data apache php bin/magento cache:status")
+                os.system("docker-compose exec fpm php bin/magento cache:status")
                 exit(0)
             elif sys.argv[3] == "enable":
                 print(Fore.BLUE + "Enable Cahe ..." + Style.RESET_ALL)
-                os.system("docker-compose exec -u www-data apache php bin/magento cache:enable")
+                os.system("docker-compose exec fpm php bin/magento cache:enable")
                 print(Fore.BLUE + "Disable Cahe Modules ..." + Style.RESET_ALL)
-                os.system("docker-compose exec -u www-data apache php bin/magento cache:disable collections eav full_page layout")
+                os.system("docker-compose exec fpm php bin/magento cache:disable collections eav full_page layout")
                 print(Fore.GREEN + "Hecho." + Style.RESET_ALL)
                 exit(0)
             elif sys.argv[3] == "disable":
                 print(Fore.BLUE + "Disable Cahe ..." + Style.RESET_ALL)
-                os.system("docker-compose exec -u www-data apache php bin/magento cache:disable")
+                os.system("docker-compose exec fpm php bin/magento cache:disable")
                 print(Fore.GREEN + "Hecho." + Style.RESET_ALL)
                 exit(0)
             elif sys.argv[3] == "clear":
                 print(Fore.BLUE + "Clear Cahe ..." + Style.RESET_ALL)
-                os.system("docker-compose exec -u www-data apache php bin/magento cache:clean")
+                os.system("docker-compose exec fpm php bin/magento cache:clean")
                 # print(Fore.BLUE + "Cambiando permisos ..." + Style.RESET_ALL)
-                # os.system("docker-compose exec -u www-data apache chown -R www-data:www-data generated pub var")
+                # os.system("docker-compose exec fpm chown -R www-data:www-data generated pub var")
                 print(Fore.GREEN + "Hecho." + Style.RESET_ALL)
                 exit(0)
             else:
@@ -179,8 +146,8 @@ if sys.argv[1] == "magento":
             os.system("rm -rf src/generated src/pub/static/*")
             print("Delete folders...")
             os.system("docker-compose up -d")
-            os.system("docker-compose exec -u www-data apache php bin/magento setup:upgrade")
-            os.system("docker-compose exec -u www-data apache php bin/magento cache:clean")
+            os.system("docker-compose exec fpm php bin/magento setup:upgrade")
+            os.system("docker-compose exec fpm php bin/magento cache:clean")
             exit(0)
 
 
@@ -192,13 +159,13 @@ if sys.argv[1] == "magento":
         elif sys.argv[2] == "template-hints":
             if len(sys.argv) == 4 and sys.argv[3] == "enable":
                 print(Fore.BLUE + "Enable template hints ..." + Style.RESET_ALL)
-                os.system("docker-compose exec -u www-data apache php bin/magento dev:template-hints:enable")
+                os.system("docker-compose exec fpm php bin/magento dev:template-hints:enable")
             else:
                 print(Fore.BLUE + "Disable template hints ..." + Style.RESET_ALL)
-                os.system("docker-compose exec -u www-data apache php bin/magento dev:template-hints:disable")
+                os.system("docker-compose exec fpm php bin/magento dev:template-hints:disable")
 
             print(Fore.BLUE + "Clear Cahe ..." + Style.RESET_ALL)
-            os.system("docker-compose exec -u www-data apache php bin/magento cache:clean")
+            os.system("docker-compose exec fpm php bin/magento cache:clean")
             print(Fore.GREEN + "Hecho." + Style.RESET_ALL)
             exit(0)
 
@@ -210,9 +177,9 @@ if sys.argv[1] == "magento":
 
         elif sys.argv[2] == "styles":
             print(Fore.BLUE + "Compilando Estilos ..." + Style.RESET_ALL)
-            os.system("docker-compose exec -u www-data apache grunt clean exec:biz less:biz;")
+            os.system("docker-compose exec fpm grunt clean exec:biz less:biz;")
             print(Fore.BLUE + "Borrando Cahe ..." + Style.RESET_ALL)
-            os.system("docker-compose exec -u www-data apache php bin/magento cache:clean")
+            os.system("docker-compose exec fpm php bin/magento cache:clean")
             print(Fore.GREEN + "Hecho." + Style.RESET_ALL)
             exit(0)
 
@@ -224,7 +191,7 @@ if sys.argv[1] == "magento":
 
         elif sys.argv[2] == "static-content":
             print(Fore.BLUE + "Deploy static content ..." + Style.RESET_ALL)
-            os.system("docker-compose exec -u www-data apache php bin/magento setup:static-content:deploy es_MX -f")
+            os.system("docker-compose exec fpm php bin/magento setup:static-content:deploy es_MX -f")
             print(Fore.GREEN + "Hecho." + Style.RESET_ALL)
             exit(0)
 
@@ -236,7 +203,7 @@ if sys.argv[1] == "magento":
         elif sys.argv[2] == "create":
             if  sys.argv[3] == "admin-user":
                 print(Fore.BLUE + "Creando Palomino admin ..." + Style.RESET_ALL)
-                os.system("docker-compose exec -u www-data apache php bin/magento admin:user:create --admin-user='palomino' --admin-password='Law200110513' --admin-email='palomino@wolfsellers.com' --admin-firstname='palomino' --admin-lastname='palomino'")
+                os.system("docker-compose exec fpm php bin/magento admin:user:create --admin-user='palomino' --admin-password='Law200110513' --admin-email='palomino@wolfsellers.com' --admin-firstname='palomino' --admin-lastname='palomino'")
             else:
                 print("No se encontro el commando a ejecutar.")
             exit(0)

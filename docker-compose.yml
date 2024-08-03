@@ -14,11 +14,12 @@ services:
    volumes:
      - '.:/app:delegated'
      - 'mymagento-magento-db:/var/lib/mysql'
-   healthcheck:
-     test: 'mysqladmin ping -h localhost -p magento2'
-     interval: 30s
-     timeout: 30s
-     retries: 3
+     - './db:/db'
+   #healthcheck:
+   #  test: 'mysqladmin ping -h localhost -p magento2'
+   #  interval: 30s
+   #  timeout: 30s
+   #  retries: 3
    networks:
      magento:
        aliases:
@@ -81,14 +82,14 @@ services:
    image: 'magento/magento-cloud-docker-php:8.2-fpm-1.3.6'
    extends: generic
    volumes:
-     - '.:/app:delegated'
+     - './src:/app:delegated'
    networks:
      magento:
        aliases:
          - fpm.magento2.docker
-   depends_on:
-     db:
-       condition: service_healthy
+   #depends_on:
+   #  db:
+   #    condition: service_healthy
  web:
    hostname: web.magento2.docker
    image: 'magento/magento-cloud-docker-nginx:1.19-1.3.6'
@@ -169,8 +170,8 @@ services:
        aliases:
          - build.magento2.docker
    depends_on:
-     db:
-       condition: service_healthy
+     #db:
+     #  condition: service_healthy
      redis:
        condition: service_healthy
      opensearch:
@@ -186,8 +187,8 @@ services:
        aliases:
          - deploy.magento2.docker
    depends_on:
-     db:
-       condition: service_healthy
+     #db:
+     #  condition: service_healthy
      redis:
        condition: service_healthy
      opensearch:
@@ -218,8 +219,8 @@ services:
        aliases:
          - cron.magento2.docker
    depends_on:
-     db:
-       condition: service_healthy
+     #db:
+     #  condition: service_healthy
      redis:
        condition: service_healthy
      opensearch:

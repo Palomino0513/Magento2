@@ -7,3 +7,4 @@ src/index.php
 media/
 server/proxy/ssl/
 log/
+db

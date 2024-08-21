@@ -200,20 +200,14 @@ if sys.argv[1] == "magento":
         #                             OTHERS COMMANDS                             #
         ###########################################################################
 
-        elif sys.argv[2] == "create":
-            if  sys.argv[3] == "admin-user":
-                print(Fore.BLUE + "Creando Palomino admin ..." + Style.RESET_ALL)
-                os.system("docker-compose exec fpm php bin/magento admin:user:create --admin-user='palomino' --admin-password='Law200110513' --admin-email='palomino@wolfsellers.com' --admin-firstname='palomino' --admin-lastname='palomino'")
-            else:
-                print("No se encontro el commando a ejecutar.")
+        elif sys.argv[2] == "create-admin":
+            print(Fore.BLUE + "Creando Palomino admin ..." + Style.RESET_ALL)
+            os.system("docker-compose exec fpm php bin/magento admin:user:create --admin-user='palomino' --admin-password='Law200110513' --admin-email='palomino@wolfsellers.com' --admin-firstname='palomino' --admin-lastname='palomino'")
             exit(0)
-
 
         # Mensaje para indicar que el comando no fue encontrado
         print("El comando docker no encontrado")
     elif len(sys.argv) > 3:
-        # if sys.argv[2] == "build":
-
         # Mensaje para indicar que el comando no fue encontrado
         print("El comando docker no encontrado")
     else:

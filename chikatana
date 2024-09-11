@@ -143,7 +143,7 @@ if sys.argv[1] == "magento":
 
         elif sys.argv[2] == "reset":
             os.system("docker-compose down")
-            os.system("rm -rf src/generated src/pub/static/*")
+            os.system("sudo rm -rf src/generated src/pub/static/*")
             print("Delete folders...")
             os.system("docker-compose up -d")
             os.system("docker-compose exec fpm php bin/magento setup:upgrade")
